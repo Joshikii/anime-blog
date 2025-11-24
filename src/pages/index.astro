@@ -1,16 +1,52 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { NewsletterBox, HomeFeed } from '../components/InteractiveUI'; // Importa HomeFeed
+import { Tag } from 'lucide-react';
 
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const allCategories = ["All", ...new Set(posts.map((post) => post.data.category))];
+const catCounts = posts.reduce((acc, post) => {
+    acc[post.data.category] = (acc[post.data.category] || 0) + 1;
+    return acc;
+}, {});
+
+const BASE = "/anime-blog";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="AnimeFocus - Home" description="Minimalist Anime Blog">
+	<main class="max-w-5xl mx-auto px-6 py-12 w-full">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-12 animate-fade-in">
+            
+            <!-- COLONNA SINISTRA (REACT: FILTRO IMMEDIATO) -->
+            <div class="md:col-span-8">
+                <!-- Passiamo i post a React. 'client:load' è fondamentale! -->
+                <HomeFeed client:load posts={posts} />
+            </div>
+
+            <!-- SIDEBAR (STATIC: LINK CLASSICI) -->
+            <aside class="md:col-span-4 md:pl-12 border-l border-gray-200 hidden md:block">
+                <div class="sticky top-24 space-y-24">
+                    <div class="bg-gray-50 p-6 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2"><Tag size={18} /> Categories</h3>
+                        <ul class="space-y-2">
+                            {allCategories.slice(1).map(cat => (
+                                <a href={`${BASE}/category/${cat.toLowerCase()}`} class="flex justify-between items-center text-sm group cursor-pointer hover:text-black text-gray-600 transition-colors">
+                                    <span>{cat}</span>
+                                    <span class="bg-gray-200 text-gray-600 px-2 py-0.5 rounded-full text-xs font-bold group-hover:bg-black group-hover:text-white transition-colors">
+                                        {catCounts[cat] || 0}
+                                    </span>
+                                </a>
+                            ))}
+                        </ul>
+                    </div>
+                    <NewsletterBox client:load />
+                </div>
+            </aside>
+
+        </div>
+	</main>
+</Layout>

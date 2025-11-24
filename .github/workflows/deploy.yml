@@ -1,0 +1,86 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install, build, and upload your site
+        uses: withastro/action@v2
+        # with:
+          # path: . # Descommenta se il tuo progetto non è nella root
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+---
+
+### FASE 3: Il Token con i Superpoteri (Per non avere errori di permesso)
+
+Questo è il punto dove ci siamo bloccati l'ultima volta. Per caricare quel file `deploy.yml`, GitHub richiede un permesso speciale chiamato `workflow`.
+
+**Facciamolo subito per evitare errori al momento del push:**
+
+1.  Vai su [GitHub.com](https://github.com) -> Clicca sulla tua icona in alto a destra -> **Settings**.
+2.  Scorri giù fino in fondo a sinistra -> **Developer settings**.
+3.  Clicca **Personal access tokens** -> **Tokens (classic)**.
+4.  Clicca **Generate new token (classic)**.
+5.  **Note:** "Token Definitivo Anime".
+6.  **Expiration:** Metti "No expiration" (così non scade).
+7.  **Scopes (LE SPUNTE - IMPORTANTISSIMO):**
+    * ✅ **`repo`** (Seleziona tutto il gruppo)
+    * ✅ **`workflow`** (Cerca questa voce e spuntala! È fondamentale)
+8.  Clicca **Generate token**.
+9.  **COPIA IL CODICE** (`ghp_...`) e non perderlo.
+
+**Ora aggiorniamo il tuo PC con questo token:**
+
+Apri il terminale nella cartella del progetto e lancia questo comando (sostituisci il token):
+
+```bash
+git remote set-url origin https://INCOLLA_IL_TOKEN_QUI@github.com/Joshikii/anime-blog.git
+```
+*(Assicurati di aver messo il tuo username corretto al posto di Joshikii se diverso).*
+
+---
+
+### FASE 4: Spedisci tutto online (Push)
+
+Ora siamo pronti. Lancia questi comandi uno alla volta nel terminale:
+
+1.  Prepara i file:
+    ```bash
+    git add .
+    ```
+2.  Salva le modifiche:
+    ```bash
+    git commit -m "Deploy finale su GitHub Pages"
+    ```
+3.  Invia (questo è il momento della verità):
+    ```bash
+    git push

@@ -1,0 +1,32 @@
+---
+import { AppLayout } from '../components/InteractiveUI';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog');
+const { title, description } = Astro.props;
+const currentYear = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content={description} />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+	</head>
+	<body class="bg-white text-gray-900 min-h-screen font-sans selection:bg-red-100 selection:text-red-900" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+        <AppLayout client:load posts={posts}>
+            <slot />
+        </AppLayout>
+        <footer class="bg-gray-50 border-t border-gray-200 mt-20">
+            <div class="max-w-5xl mx-auto px-6 py-8 flex justify-between items-center">
+              <div class="text-sm text-gray-500">© {currentYear} AnimeFocus.</div>
+            </div>
+        </footer>
+	</body>
+</html>

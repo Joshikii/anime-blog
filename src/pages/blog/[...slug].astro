@@ -1,0 +1,58 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { ArrowLeft, Coffee } from 'lucide-react';
+// Importiamo WalineComments (ora corretto)
+import { SocialShare, WalineComments, ReadingProgress, RelatedPosts } from '../../components/InteractiveUI';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post, allPosts: posts }, 
+  }));
+}
+
+const { post, allPosts } = Astro.props;
+const { Content } = await post.render();
+const BASE = "/anime-blog";
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+    <ReadingProgress client:load />
+    
+    <div class="max-w-3xl mx-auto px-6 py-12 animate-fade-in relative">
+        <a href={`${BASE}/`} class="flex items-center gap-3 text-lg font-bold text-gray-600 hover:text-black mb-8 mt-4 transition-colors">
+            <ArrowLeft size={24} /> Home
+        </a>
+
+        <header class="mb-8 text-center">
+            <div class="inline-block bg-gray-100 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-gray-600 mb-4">
+                {post.data.category}
+            </div>
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                {post.data.title}
+            </h1>
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-500 border-b border-gray-100 pb-8">
+                <span class="font-bold">{post.data.author}</span>
+                <span>•</span>
+                <span>{post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                <span>•</span>
+                <span class="flex items-center gap-1"><Coffee size={14} /> 5 min read</span>
+            </div>
+        </header>
+        
+        <img src={post.data.image} alt={post.data.title} class="w-full h-[300px] md:h-[450px] object-cover rounded-2xl mb-10 shadow-sm" />
+
+        <div class="prose prose-xl prose-gray max-w-none font-sans">
+            <Content />
+        </div>
+
+        <SocialShare client:visible />
+        
+        <!-- Usa Waline invece di Giscus -->
+        <WalineComments client:visible />
+        
+        <RelatedPosts client:visible currentSlug={post.slug} posts={allPosts} />
+    </div>
+</Layout>

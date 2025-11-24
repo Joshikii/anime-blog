@@ -1,0 +1,45 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Heart, MapPin, Star } from 'lucide-react';
+const BASE = "/anime-blog";
+---
+
+<Layout title="About - AnimeFocus" description="About Alex">
+  <div class="max-w-2xl mx-auto pt-12 px-6 animate-fade-in">
+    <div class="text-center mb-12">
+      <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto mb-6 overflow-hidden relative group">
+         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" class="w-full h-full object-cover" />
+      </div>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Hi, I'm Alex.</h1>
+      <p class="text-xl text-gray-500 font-medium">Writer & Anime Enthusiast</p>
+    </div>
+    <div class="prose prose-lg prose-gray mx-auto mb-16">
+      <p>
+        Welcome to <strong>AnimeFocus</strong>. I created this space because I was tired of the usual rushed reviews.
+        Here I take the time to analyze what I watch, looking for the meaning behind every frame.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+      <div class="bg-gray-50 p-6 rounded-2xl text-center">
+        <div class="flex justify-center text-red-500 mb-3"><Heart size={24} /></div>
+        <h3 class="font-bold mb-1">Passion</h3>
+        <p class="text-xs text-gray-500">Anime since 2005</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-2xl text-center">
+        <div class="flex justify-center text-gray-900 mb-3"><MapPin size={24} /></div>
+        <h3 class="font-bold mb-1">Base</h3>
+        <p class="text-xs text-gray-500">Milan, IT</p>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-2xl text-center">
+        <div class="flex justify-center text-yellow-500 mb-3"><Star size={24} /></div>
+        <h3 class="font-bold mb-1">Genre</h3>
+        <p class="text-xs text-gray-500">Seinen / Sci-Fi</p>
+      </div>
+    </div>
+    <div class="mt-12 text-center">
+      <a href={`${BASE}/`} class="text-sm font-bold text-gray-400 hover:text-black transition-colors">
+        Back to Home
+      </a>
+    </div>
+  </div>
+</Layout>
