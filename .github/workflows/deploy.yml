@@ -21,21 +21,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
-        # Se npm ci fallisce perché manca package-lock, userà npm install
-        continue-on-error: true
-      
-      - name: Build if ci failed
-        if: failure()
         run: npm install
 
-      - name: Build Astro
+      - name: Build
         run: npm run build
 
       - name: Upload artifact
@@ -53,20 +48,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-```
-
-### 3. Il "Fix Magico" (Package Lock)
-Il 90% delle volte il pallino è rosso perché GitHub non sa esattamente quali versioni delle librerie usare. Dobbiamo generare il file "sigillo di garanzia" (`package-lock.json`).
-
-Lancia questi comandi nel terminale:
-
-1.  Rigenera il file locale:
-    ```bash
-    rm -rf node_modules package-lock.json
-    npm install
-    ```
-2.  Carica tutto (questo sovrascrive i vecchi errori):
-    ```bash
-    git add .
-    git commit -m "Fix deploy workflow e lockfile"
-    git push
