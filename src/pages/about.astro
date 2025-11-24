@@ -8,34 +8,54 @@ const BASE = "/anime-blog";
   <div class="max-w-2xl mx-auto pt-12 px-6 animate-fade-in">
     <div class="text-center mb-12">
       <div class="w-32 h-32 rounded-full bg-gray-200 mx-auto mb-6 overflow-hidden relative group">
-         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Avatar" class="w-full h-full object-cover" />
+         <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fa1%2Fc0%2F3d%2Fa1c03d1f88b503e7588e1c449675f805.jpg&f=1&nofb=1&ipt=ebb792f121ca118b7786ca835f249a04ea5aebf53abdab8750b8d72b44f210c0" alt="Avatar" class="w-full h-full object-cover" />
       </div>
-      <h1 class="text-4xl font-bold text-gray-900 mb-4">Hi, I'm Alex.</h1>
-      <p class="text-xl text-gray-500 font-medium">Writer & Anime Enthusiast</p>
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Hi, I'm Jo.</h1>
+      <p class="text-xl text-gray-500 font-medium">Anime Enthusiast & Improvised Writer</p>
     </div>
-    <div class="prose prose-lg prose-gray mx-auto mb-16">
+    <div class="prose prose-lg prose-gray mx-auto mb-8">
       <p>
-        Welcome to <strong>AnimeFocus</strong>. I created this space because I was tired of the usual rushed reviews.
-        Here I take the time to analyze what I watch, looking for the meaning behind every frame.
-      </p>
+    Welcome to <strong>AnimeFocus</strong>.
+    <br><br>
+    I created this space because I realized I love talking about every aspect of anime, diving deep and exploring every detail.
+    <br><br>
+    My journey started back in the <em>ancient</em> times of 2015 with the classics and cult hits. But after a year I stumbled upon what would become the bane of my existence: <strong>seasonals</strong>.
+    <br><br>
+    I started following every show of every season (no matter how questionable), which is how I truly refined my taste. Unfortunately, I eventually became an adult. With life getting busier, I’ve had to become picky, so now I only stick to the shows that really catches my eyes.
+    <br><br>
+    Hope you'll enjoy the stay!
+</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <div class="bg-gray-50 p-6 rounded-2xl text-center">
         <div class="flex justify-center text-red-500 mb-3"><Heart size={24} /></div>
         <h3 class="font-bold mb-1">Passion</h3>
-        <p class="text-xs text-gray-500">Anime since 2005</p>
+        <p class="text-xs text-gray-500">Anime since 2015</p>
       </div>
       <div class="bg-gray-50 p-6 rounded-2xl text-center">
         <div class="flex justify-center text-gray-900 mb-3"><MapPin size={24} /></div>
         <h3 class="font-bold mb-1">Base</h3>
-        <p class="text-xs text-gray-500">Milan, IT</p>
+        <p class="text-xs text-gray-500">Sicily, IT</p>
       </div>
       <div class="bg-gray-50 p-6 rounded-2xl text-center">
         <div class="flex justify-center text-yellow-500 mb-3"><Star size={24} /></div>
         <h3 class="font-bold mb-1">Genre</h3>
-        <p class="text-xs text-gray-500">Seinen / Sci-Fi</p>
+        <p class="text-xs text-gray-500">Romance / Fantasy</p>
       </div>
     </div>
+
+    <!-- Top 3 Anime (CORRETTO: class invece di className) -->
+    <div class="border-t border-gray-300 pt-8 text-center">
+      <h3 class="font-bold text-lg mb-6">My All-Time Top 3</h3>
+      <div class="flex flex-wrap justify-center gap-4">
+        {['Toradora', 'Gurren Lagann', 'Haikyuu'].map(anime => (
+          <span class="bg-black text-white px-4 py-2 rounded-full text-sm font-bold">
+            {anime}
+          </span>
+        ))}
+      </div>
+    </div>
+
     <div class="mt-12 text-center">
       <a href={`${BASE}/`} class="text-sm font-bold text-gray-400 hover:text-black transition-colors">
         Back to Home
