@@ -146,20 +146,34 @@ export const SearchOverlay = ({ isOpen, onClose, posts }) => {
     <div className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-md animate-fade-in flex flex-col">
       <div className="max-w-3xl w-full mx-auto px-6 pt-8">
         <div className="flex justify-end mb-8">
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors"><X size={32} className="text-gray-500" /></button>
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-100 transition-colors">
+            <X size={32} className="text-gray-500" />
+          </button>
         </div>
         <div className="relative mb-12">
           <Search className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400" size={32} />
-          <input type="text" placeholder="Search..." className="w-full bg-transparent border-b-2 border-gray-200 text-3xl font-bold py-4 pl-12 focus:outline-none focus:border-black transition-colors" autoFocus value={query} onChange={(e) => setQuery(e.target.value)} />
+          <input 
+            type="text" 
+            placeholder="Search..." 
+            className="w-full bg-transparent border-b-2 border-gray-200 text-3xl font-bold py-4 pl-12 focus:outline-none focus:border-black transition-colors" 
+            autoFocus 
+            value={query} 
+            onChange={(e) => setQuery(e.target.value)} 
+          />
         </div>
         <div className="space-y-4 overflow-y-auto max-h-[60vh]">
-          {query !== '' && filtered.length === 0 && <p className="text-gray-400 text-lg">No results found.</p>}
+          {query !== '' && filtered.length === 0 && (
+            <p className="text-gray-400 text-lg">No results found.</p>
+          )}
           {filtered.map(post => (
             <a key={post.slug} href={`${BASE_URL}/blog/${post.slug}`} className="group flex gap-4 items-center cursor-pointer p-4 rounded-xl hover:bg-gray-50 transition-colors">
               <div className="w-20 h-20 rounded-lg bg-gray-200 overflow-hidden shrink-0">
-                 <img src={post.data.image} className="w-full h-full object-cover" />
+                <img src={post.data.image} className="w-full h-full object-cover" />
               </div>
-              <div><span className="text-xs font-bold uppercase text-gray-400 mb-1 block">{post.data.category}</span><h3 className="text-xl font-bold group-hover:text-red-600 transition-colors">{post.data.title}</h3></div>
+              <div>
+                <span className="text-xs font-bold uppercase text-gray-400 mb-1 block">{post.data.category}</span>
+                <h3 className="text-xl font-bold group-hover:text-red-600 transition-colors">{post.data.title}</h3>
+              </div>
             </a>
           ))}
         </div>
@@ -168,45 +182,60 @@ export const SearchOverlay = ({ isOpen, onClose, posts }) => {
   );
 };
 
+// --- NEWSLETTER BOX (MODIFICATA: Usa <input> invece di Textarea) ---
 export const NewsletterBox = ({ className }) => {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle');
 
   const handleSubmit = (e) => {
+    // Non preveniamo il default qui, lasciamo che il form apra il popup di Buttondown
     if (!email) return;
+    
     setStatus('loading');
-    setTimeout(() => { setStatus('success'); setTimeout(() => { setStatus('idle'); setEmail(''); }, 3000); }, 1500);
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      e.target.form.requestSubmit();
-    }
-  };
-
-  const handleChange = (e) => {
-    setEmail(e.target.value.replace(/[\r\n]/gm, ''));
+    // Feedback visivo per l'utente
+    setTimeout(() => {
+      setStatus('success');
+      setTimeout(() => {
+        setStatus('idle');
+        setEmail('');
+      }, 3000);
+    }, 1500);
   };
 
   return (
     <div className={`bg-black text-white p-6 rounded-2xl shadow-xl overflow-hidden ${className}`}>
       <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><Mail size={18} /> Newsletter</h3>
       <p className="text-gray-400 text-xs mb-4">Don't miss my latest analysis. Zero spam.</p>
-      <form action={NEWSLETTER_ACTION} method="post" target="_blank" className="space-y-2">
+      
+      <form 
+        action={NEWSLETTER_ACTION} 
+        method="post" 
+        target="popupwindow" 
+        onSubmit={(e) => {
+            window.open(NEWSLETTER_ACTION, 'popupwindow', 'scrollbars=yes,width=800,height=600');
+            handleSubmit(e);
+        }}
+        className="space-y-2"
+      >
         <div className="relative">
-             <textarea 
+             {/* INPUT SEMPLICE E ROBUSTO */}
+             <input 
+                type="email" 
                 name="email" 
                 placeholder="Your email" 
                 value={email} 
-                onChange={handleChange} 
-                onKeyDown={handleKeyDown}
-                className="w-full bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:ring-1 focus:ring-white transition-all min-h-[40px] resize-none overflow-hidden"
-                rows={1}
+                onChange={(e) => setEmail(e.target.value)} 
+                className="w-full bg-gray-800 border-none rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:ring-1 focus:ring-white outline-none transition-all h-[40px]" 
                 required
              />
         </div>
-        <button type="submit" className="w-full bg-white text-black font-bold text-sm py-2 rounded-lg hover:bg-gray-200 transition-colors">Subscribe</button>
+        <button 
+          type="submit"
+          disabled={status === 'loading'}
+          className="w-full bg-white text-black font-bold text-sm py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-70"
+        >
+          {status === 'loading' ? 'Subscribing...' : 'Subscribe'}
+        </button>
       </form>
     </div>
   );
@@ -217,21 +246,39 @@ export const SubscribeModal = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm animate-fade-in flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-black z-10"><X size={20} /></button>
-        <div className="bg-black text-white p-8 text-center">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-red-600 z-10">
+          <X size={20} />
+        </button>
+        
+        <div className="flex flex-col">
+          <div className="bg-black text-white p-8 text-center">
             <Mail className="mx-auto mb-4" size={32} />
             <h3 className="text-2xl font-bold mb-2">Newsletter</h3>
             <p className="text-gray-300 text-sm">Get my analysis directly in your inbox.</p>
-        </div>
-        <form action={NEWSLETTER_ACTION} method="post" target="_blank" rel="noopener noreferrer" className="p-8" onSubmit={() => setTimeout(onClose, 1000)}>
+          </div>
+          <form action={NEWSLETTER_ACTION} method="post" target="_blank" rel="noopener noreferrer" className="p-8" onSubmit={() => setTimeout(onClose, 1000)}>
             <label className="block text-xs font-bold uppercase text-gray-500 mb-2">Your email</label>
-            <input type="email" name="email" required placeholder="alex@example.com" className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-black focus:ring-1 focus:ring-black mb-6 outline-none transition-all" />
+            <input 
+              type="email" 
+              name="email" 
+              required 
+              placeholder="alex@example.com" 
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-black focus:ring-1 focus:ring-black mb-6 outline-none transition-all" 
+            />
             <button type="submit" className="w-full bg-black text-white font-bold py-3 rounded-lg hover:bg-gray-800 transition-colors flex justify-center items-center gap-2">Subscribe Now</button>
             <p className="text-[10px] text-gray-400 text-center mt-4">Powered by Buttondown</p>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );
+};
+
+// Manteniamo la DynamicTextarea per i commenti (se usati in futuro)
+export const DynamicTextarea = ({ value, onChange, placeholder, className, required, name, onKeyDown }) => {
+  const textareaRef = useRef(null);
+  useEffect(() => { if (textareaRef.current) { textareaRef.current.style.height = 'auto'; textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'; } }, [value]);
+  return <textarea ref={textareaRef} name={name} rows={1} placeholder={placeholder} className={`${className} resize-none overflow-hidden`} value={value} onChange={onChange} required={required} onKeyDown={onKeyDown} />;
 };
 
 export const WalineComments = () => {
@@ -254,7 +301,8 @@ export const WalineComments = () => {
               'https://unpkg.com/@waline/emojis@1.1.0/weibo',
               'https://unpkg.com/@waline/emojis@1.1.0/bilibili',
           ],
-          requiredMeta: ['nick', 'mail'], 
+          meta: ['nick', 'mail'], 
+          requiredMeta: ['nick', 'mail'],
           pageSize: 10,
         });
       }
@@ -276,6 +324,7 @@ export const WalineComments = () => {
 
 export const RelatedPosts = ({ currentSlug, posts }) => {
   const related = posts.filter(p => p.slug !== currentSlug).slice(0, 2);
+  
   return (
     <div className="bg-gray-50 py-12 mt-8 rounded-2xl px-8">
       <h3 className="font-bold text-xl mb-6">You might also like</h3>
@@ -298,13 +347,29 @@ export const RelatedPosts = ({ currentSlug, posts }) => {
 
 export const SocialShare = () => {
   const [copied, setCopied] = useState(false);
-  const getShareData = () => { if (typeof window === 'undefined') return { url: '', title: '' }; return { url: window.location.href, title: document.title }; };
-  const shareTwitter = () => { const { url, title } = getShareData(); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank'); };
-  const shareWhatsApp = () => { const { url, title } = getShareData(); window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`, '_blank'); };
+  const getShareData = () => {
+    if (typeof window === 'undefined') return { url: '', title: '' };
+    return { url: window.location.href, title: document.title };
+  };
+  const shareTwitter = () => {
+    const { url, title } = getShareData();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+  };
+  const shareWhatsApp = () => {
+    const { url, title } = getShareData();
+    window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`, '_blank');
+  };
   const handleNativeShare = async () => {
     const { url, title } = getShareData();
-    if (navigator.share) { try { await navigator.share({ title, url }); } catch (err) { console.log('Error sharing:', err); }
-    } else { try { await navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch (err) { console.error('Failed to copy:', err); } }
+    if (navigator.share) {
+      try { await navigator.share({ title, url }); } catch (err) { console.log('Error sharing:', err); }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch (err) { console.error('Failed to copy:', err); }
+    }
   };
   return (
     <div className="flex flex-col items-center justify-center py-6 border-t border-gray-100 mt-8">
@@ -337,44 +402,18 @@ export const ReadingProgress = () => {
 
 export const CookieBanner = () => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     const consent = localStorage.getItem('animefocus_cookie_consent');
-    if (!consent) {
-      const timer = setTimeout(() => setIsVisible(true), 1000);
-      return () => clearTimeout(timer);
-    } else if (consent === 'accepted') {
-      loadGoogleAnalytics();
-    }
+    if (!consent) { const timer = setTimeout(() => setIsVisible(true), 1000); return () => clearTimeout(timer); }
   }, []);
-
-  const handleAccept = () => {
-    localStorage.setItem('animefocus_cookie_consent', 'accepted');
-    setIsVisible(false);
-    loadGoogleAnalytics();
-  };
-
-  const handleDecline = () => {
-    localStorage.setItem('animefocus_cookie_consent', 'declined');
-    setIsVisible(false);
-  };
-
+  const handleAccept = () => { localStorage.setItem('animefocus_cookie_consent', 'accepted'); setIsVisible(false); loadGoogleAnalytics(); };
+  const handleDecline = () => { localStorage.setItem('animefocus_cookie_consent', 'declined'); setIsVisible(false); };
   if (!isVisible) return null;
-
   return (
     <div className="fixed bottom-6 right-6 z-[80] w-[calc(100%-3rem)] max-w-sm bg-white p-6 rounded-2xl shadow-2xl border border-gray-100 animate-fade-in">
       <div className="flex items-start gap-4">
-        <div className="bg-gray-100 p-2 rounded-full shrink-0 text-gray-600">
-          <Cookie size={24} />
-        </div>
-        <div>
-          <h4 className="font-bold text-gray-900 mb-1">Cookie Policy</h4>
-          <p className="text-xs text-gray-500 leading-relaxed mb-4">We use cookies to analyze traffic. No personal data sold.</p>
-          <div className="flex gap-3">
-            <button onClick={handleAccept} className="flex-1 bg-black text-white text-xs font-bold py-2 rounded-lg hover:bg-gray-800 transition-colors">Accept</button>
-            <button onClick={handleDecline} className="flex-1 bg-gray-100 text-gray-600 text-xs font-bold py-2 rounded-lg hover:bg-gray-200 transition-colors">Decline</button>
-          </div>
-        </div>
+        <div className="bg-gray-100 p-2 rounded-full shrink-0 text-gray-600"><Cookie size={24} /></div>
+        <div><h4 className="font-bold text-gray-900 mb-1">Cookie Policy</h4><p className="text-xs text-gray-500 leading-relaxed mb-4">We use cookies to analyze traffic. No personal data sold.</p><div className="flex gap-3"><button onClick={handleAccept} className="flex-1 bg-black text-white text-xs font-bold py-2 rounded-lg hover:bg-gray-800 transition-colors">Accept</button><button onClick={handleDecline} className="flex-1 bg-gray-100 text-gray-600 text-xs font-bold py-2 rounded-lg hover:bg-gray-200 transition-colors">Decline</button></div></div>
       </div>
     </div>
   );

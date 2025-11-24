@@ -5,7 +5,6 @@ import { getCollection } from 'astro:content';
 const posts = await getCollection('blog');
 const { title, description } = Astro.props;
 const currentYear = new Date().getFullYear();
-
 const BASE = "/anime-blog";
 ---
 
@@ -15,12 +14,174 @@ const BASE = "/anime-blog";
 		<meta charset="UTF-8" />
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
-
+		
 		<link rel="icon" type="image/svg+xml" href={`${BASE}/favicon.svg`} />
+		
 		<title>{title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+        
+        <!-- STILE PERSONALIZZATO PER WALINE -->
+        <style is:global>
+            :root {
+                --waline-theme-color: #000000 !important;
+                --waline-active-color: #dc2626 !important;
+                --waline-bgcolor: #f9fafb !important;
+                --waline-bgcolor-light: #ffffff !important;
+                --waline-color: #374151 !important;
+                --waline-font-size: 16px !important;
+                --waline-border-color: #e5e7eb !important;
+                --waline-border-radius: 1rem !important;
+                --waline-box-shadow: none !important;
+            }
+
+            #waline {
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                --waline-info-bgcolor: #f3f4f6 !important;
+            }
+
+            /* --- CAMPI DI INPUT (NICKNAME & EMAIL) --- */
+            .wl-header {
+                border-bottom: none !important;
+                display: flex !important;
+                gap: 10px !important;
+                padding: 5px !important;
+                margin-bottom: 0rem !important;
+            }
+
+            .wl-header-item {
+                flex: 1 !important;
+                border-bottom: none !important;
+
+                /* Questa parte controlla la disposizione */
+                display: flex !important;
+                flex-direction: row !important; /* Mette label e input sulla stessa riga */
+                align-items: center !important; /* <--- QUESTA È LA CHIAVE: Centra verticalmente */
+                gap: 10px !important;           /* Spazio tra la scritta e il box */
+
+            }
+
+            /* Il box vero e proprio */
+            .wl-header input {
+                padding: 0px 7px !important; /* Meno padding verticale = box più sottile */
+                height: 35px !important;      /* Altezza fissa controllata */
+                border-radius: 10px !important;
+                background-color: #ffffff !important;
+                border: 1px solid #e5e7eb !important;
+                color: #374151 !important; /* Testo digitato grigio scuro elegante */
+                font-weight: 50 !important;
+                font-size: 16px !important; /* Testo digitato grande */
+                line-height: 1.5 !important;
+                transition: all 0.2s !important;
+            }
+
+            .wl-header input:focus {
+                background-color: #ffffff !important;
+                border-color: #6e6e6eff !important;
+                box-shadow: 0 0 0 0px #6e6e6eff !important;
+            }
+
+           /* --- STILE ETICHETTE (LABEL) NICKNAME & EMAIL --- */
+            /* Colpisce specificamente le scritte "NickName" e "E-Mail" */
+            .wl-header label {
+                font-size: 13px !important;       /* <--- CAMBIA QUESTO NUMERO per la grandezza */
+                font-weight: 400 !important;      /* 800 è molto grassetto, 400 normale */
+                color: #111827 !important;        /* Nero scuro */
+                opacity: 1 !important;            /* Assicura che siano ben visibili */
+                
+                /* Se vuoi spostarle un po', usa questi: */
+                /* margin-right: 10px !important; */
+            }
+
+            /* --- AREA DI TESTO --- */
+            .wl-editor {
+                min-height: 120px !important;
+                border-radius: 12px !important;
+                background-color: #ffffff !important;
+                border: 1px solid #e5e7eb !important;
+                padding: 16px !important;
+                margin-bottom: 1rem !important;
+                font-size: 16px !important;
+            }
+            .wl-editor:focus {
+                border-color: #6e6e6eff !important;
+                box-shadow: 0 0 0 0px #6e6e6eff !important;
+            }
+
+            /* --- BOTTONE SUBMIT --- */
+            .wl-btn.primary {
+                background: #000000 !important;
+                border-color: #000000 !important;
+                color: white !important;
+                border-radius: 9999px !important;
+                font-weight: bold !important;
+                padding: 0.6rem 2rem !important;
+                height: auto !important;
+                font-size: 14px !important;
+            }
+            .wl-btn.primary:hover {
+                background: #dc2626 !important;
+                border-color: #dc2626 !important;
+            }
+
+            /* --- PULIZIA TOTALE (Nascondi info browser/OS) --- */
+            
+            /* Nasconde "Powered by Waline" */
+            .wl-power { display: none !important; }
+            
+            /* Selettore aggressivo per nascondere TUTTI i badge meta (Browser, OS) */
+            .wl-meta > span { display: none !important; }
+            
+            /* Nasconde specificamente le classi note per sicurezza */
+            .wl-ua, .wl-os, .wl-sys { display: none !important; }
+            
+            /* --- NASCONDI LOGIN (METODO FURBO) --- */
+            /* Seleziona dentro il footer (.wl-footer) qualsiasi bottone (.wl-btn) */
+            /* che NON ha la classe .primary (cioè non è il tasto Submit) */
+            .wl-footer .wl-btn:not(.primary) {
+                display: none !important;
+                width: 0 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            
+            /* Nasconde icone extra sotto l'editor */
+            .wl-action { display: none !important; } 
+            
+            /* Nasconde icona utente SVG */
+            .wl-user svg { display: none !important; }
+            
+            /* Sistema i margini dei commenti */
+            .wl-content { 
+                font-family: 'Plus Jakarta Sans', sans-serif !important;
+                color: #374151 !important;
+                font-size: 15px !important;
+            }
+            .wl-nick {
+                color: #111827 !important;
+                font-weight: 800 !important;
+                font-size: 14px !important;
+            }
+            /* --- ETICHETTA ADMIN --- */
+            .wl-badge { 
+                display: inline-block !important; /* Rendila visibile */
+                background-color: #000000 !important; /* Sfondo Nero */
+                color: #ffffff !important; /* Scritta Bianca */
+                border: 1px solid #000000 !important;
+                border-radius: 4px !important; /* Bordi leggermente tondi */
+                font-size: 10px !important;
+                padding: 1px 6px !important;
+                margin-left: 8px !important;
+                font-weight: 800 !important;
+                text-transform: uppercase !important; /* Scritta maiuscola */
+                letter-spacing: 0.05em !important;
+            }
+            
+        </style>
+
 	</head>
 	<body class="bg-white text-gray-900 min-h-screen font-sans selection:bg-red-100 selection:text-red-900" style="font-family: 'Plus Jakarta Sans', sans-serif;">
         <AppLayout client:load posts={posts}>
