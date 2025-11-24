@@ -20,67 +20,53 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+        # Se npm ci fallisce perché manca package-lock, userà npm install
+        continue-on-error: true
       
-      - name: Install, build, and upload your site
-        uses: withastro/action@v2
-        # with:
-          # path: . # Descommenta se il tuo progetto non è nella root
+      - name: Build if ci failed
+        if: failure()
+        run: npm install
+
+      - name: Build Astro
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
 ```
 
----
+### 3. Il "Fix Magico" (Package Lock)
+Il 90% delle volte il pallino è rosso perché GitHub non sa esattamente quali versioni delle librerie usare. Dobbiamo generare il file "sigillo di garanzia" (`package-lock.json`).
 
-### FASE 3: Il Token con i Superpoteri (Per non avere errori di permesso)
+Lancia questi comandi nel terminale:
 
-Questo è il punto dove ci siamo bloccati l'ultima volta. Per caricare quel file `deploy.yml`, GitHub richiede un permesso speciale chiamato `workflow`.
-
-**Facciamolo subito per evitare errori al momento del push:**
-
-1.  Vai su [GitHub.com](https://github.com) -> Clicca sulla tua icona in alto a destra -> **Settings**.
-2.  Scorri giù fino in fondo a sinistra -> **Developer settings**.
-3.  Clicca **Personal access tokens** -> **Tokens (classic)**.
-4.  Clicca **Generate new token (classic)**.
-5.  **Note:** "Token Definitivo Anime".
-6.  **Expiration:** Metti "No expiration" (così non scade).
-7.  **Scopes (LE SPUNTE - IMPORTANTISSIMO):**
-    * ✅ **`repo`** (Seleziona tutto il gruppo)
-    * ✅ **`workflow`** (Cerca questa voce e spuntala! È fondamentale)
-8.  Clicca **Generate token**.
-9.  **COPIA IL CODICE** (`ghp_...`) e non perderlo.
-
-**Ora aggiorniamo il tuo PC con questo token:**
-
-Apri il terminale nella cartella del progetto e lancia questo comando (sostituisci il token):
-
-```bash
-git remote set-url origin https://INCOLLA_IL_TOKEN_QUI@github.com/Joshikii/anime-blog.git
-```
-*(Assicurati di aver messo il tuo username corretto al posto di Joshikii se diverso).*
-
----
-
-### FASE 4: Spedisci tutto online (Push)
-
-Ora siamo pronti. Lancia questi comandi uno alla volta nel terminale:
-
-1.  Prepara i file:
+1.  Rigenera il file locale:
+    ```bash
+    rm -rf node_modules package-lock.json
+    npm install
+    ```
+2.  Carica tutto (questo sovrascrive i vecchi errori):
     ```bash
     git add .
-    ```
-2.  Salva le modifiche:
-    ```bash
-    git commit -m "Deploy finale su GitHub Pages"
-    ```
-3.  Invia (questo è il momento della verità):
-    ```bash
+    git commit -m "Fix deploy workflow e lockfile"
     git push
