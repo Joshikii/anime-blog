@@ -16,6 +16,10 @@ export async function getStaticPaths() {
 const { post, allPosts } = Astro.props;
 const { Content } = await post.render();
 const BASE = "/anime-blog";
+
+// --- CALCOLO TEMPO DI LETTURA ---
+const wordCount = post.body.split(/\s+/g).length;
+const readingTime = Math.ceil(wordCount / 200); // 200 parole al minuto
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
@@ -38,7 +42,7 @@ const BASE = "/anime-blog";
                 <span>•</span>
                 <span>{post.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                 <span>•</span>
-                <span class="flex items-center gap-1"><Coffee size={14} /> 5 min read</span>
+                <span class="flex items-center gap-1"><Coffee size={14} /> {readingTime} min read</span>
             </div>
         </header>
         
