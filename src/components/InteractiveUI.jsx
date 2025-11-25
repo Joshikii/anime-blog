@@ -297,6 +297,12 @@ export const WalineComments = () => {
           serverURL: WALINE_SERVER_URL,
           lang: 'en',
           dark: false, 
+
+          locale: {
+          nick: 'Name',      // Cambia "NickName"
+          mail: 'Email',     // Cambia "E-Mail"
+        },
+
           emoji: [
               'https://unpkg.com/@waline/emojis@1.1.0/weibo',
               'https://unpkg.com/@waline/emojis@1.1.0/bilibili',
@@ -373,7 +379,7 @@ export const SocialShare = () => {
   };
   return (
     <div className="flex flex-col items-center justify-center py-6 border-t border-gray-100 mt-8">
-      <span className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Share</span>
+      <span className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4">Share</span>
       <div className="flex gap-4">
         <button onClick={shareTwitter} className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-black hover:text-white transition-all"><Twitter size={18} /></button>
         <button onClick={shareWhatsApp} className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-green-500 hover:text-white transition-all"><MessageCircle size={18} /></button>

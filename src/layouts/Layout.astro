@@ -50,6 +50,14 @@ const BASE = "/anime-blog";
                 margin-bottom: 0rem !important;
             }
 
+            /* --- MOBILE FIX (AGGIUNTO QUI) --- */
+            @media (max-width: 640px) {
+                .wl-header {
+                    flex-direction: column !important; /* Impila verticalmente */
+                    align-items: stretch !important;   /* Allarga al 100% */
+                }
+            }
+
             .wl-header-item {
                 flex: 1 !important;
                 border-bottom: none !important;
@@ -65,12 +73,12 @@ const BASE = "/anime-blog";
             /* Il box vero e proprio */
             .wl-header input {
                 padding: 0px 7px !important; /* Meno padding verticale = box più sottile */
-                height: 35px !important;      /* Altezza fissa controllata */
+                height: 35px !important;       /* Altezza fissa controllata */
                 border-radius: 10px !important;
                 background-color: #ffffff !important;
                 border: 1px solid #e5e7eb !important;
                 color: #374151 !important; /* Testo digitato grigio scuro elegante */
-                font-weight: 50 !important;
+                font-weight: 500 !important;
                 font-size: 16px !important; /* Testo digitato grande */
                 line-height: 1.5 !important;
                 transition: all 0.2s !important;
