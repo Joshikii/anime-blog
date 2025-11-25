@@ -25,7 +25,7 @@ const readingTime = Math.ceil(wordCount / 200); // 200 parole al minuto
 <Layout title={post.data.title} description={post.data.description}>
     <ReadingProgress client:load />
     
-    <div class="max-w-3xl mx-auto px-6 py-12 animate-fade-in relative">
+    <div class="max-w-3xl mx-auto px-6 pt-6 pb-12 animate-fade-in relative">
         <a href={`${BASE}/`} class="flex items-center gap-3 text-lg font-bold text-gray-600 hover:text-black mb-8 mt-4 transition-colors">
             <ArrowLeft size={24} /> Home
         </a>
@@ -46,7 +46,7 @@ const readingTime = Math.ceil(wordCount / 200); // 200 parole al minuto
             </div>
         </header>
         
-        <img src={post.data.image} alt={post.data.title} class="w-full h-[300px] md:h-[450px] object-cover rounded-2xl mb-10 shadow-sm" />
+        <img src={post.data.image} alt={post.data.title} class="w-full max-w-[720px] mx-auto h-[200px] md:h-[300px] object-cover rounded-2xl mb-10 shadow-sm" />
 
         <div class="prose prose-lg prose-gray max-w-none font-sans">
             <Content />
