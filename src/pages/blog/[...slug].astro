@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 const { post, allPosts } = Astro.props;
 const { Content } = await post.render();
-const BASE = "/anime-blog";
+const BASE = "";
 
 // --- CALCOLO TEMPO DI LETTURA ---
 const wordCount = post.body.split(/\s+/g).length;

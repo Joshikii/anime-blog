@@ -13,7 +13,7 @@ const WALINE_SERVER_URL = 'https://waline-anime-blog-comments.vercel.app';
 // 3. NEWSLETTER
 const NEWSLETTER_ACTION = "https://buttondown.com/api/emails/embed-subscribe/Joo";
 
-const BASE_URL = "/anime-blog";
+const BASE_URL = "";
 
 // --- HELPER: Carica Google Analytics Dinamicamente ---
 const loadGoogleAnalytics = () => {

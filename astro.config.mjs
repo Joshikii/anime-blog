@@ -5,6 +5,6 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   // IMPORTANTE: Se usi GitHub Pages con sottocartella
   site: 'https://joshikii.github.io',
-  base: '/anime-blog',
+  base: "",
   integrations: [react(), tailwind()],
 });
