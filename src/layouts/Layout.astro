@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 const posts = await getCollection('blog');
 const { title, description } = Astro.props;
 const currentYear = new Date().getFullYear();
-const BASE = "/anime-blog";
+const BASE = "";
 ---
 
 <!doctype html>
@@ -15,7 +15,7 @@ const BASE = "/anime-blog";
 		<meta name="description" content={description} />
 		<meta name="viewport" content="width=device-width" />
 		
-		<link rel="icon" type="image/svg+xml" href={`${BASE}/favicon.svg`} />
+		<link rel="icon" type="image/svg+xml" href={"/favicon.svg"} />
 		
 		<title>{title}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
